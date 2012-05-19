@@ -325,7 +325,8 @@ public class MedibugsActivity extends Activity implements OnPreferenceChangeList
 		}
     	
     }
-    private class MyWebViewClient extends WebViewClient {
+    
+	private class MyWebViewClient extends WebViewClient {
     	Activity activity;
     	public MyWebViewClient(Activity activity){
     		super();

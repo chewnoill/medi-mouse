@@ -1,10 +1,11 @@
 package medi.mouse;
 
-import org.acra.*;
-import org.acra.annotation.*;
-
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
 import android.app.Application;
-//mailTo = "crashreports@williamcohen.com",
+//import android.os.Application;
+
 
 @ReportsCrashes(formKey = "dFhnRHR6Qy02aFZnSE9LU2NEVDRuY1E6MQ", 
 mode = ReportingInteractionMode.TOAST,

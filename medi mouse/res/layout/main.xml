@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/body"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/body"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/top_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/name_view"
@@ -20,11 +20,11 @@
 
         <ImageView
             android:id="@+id/picture_view"
-            android:contentDescription="your face"
             android:layout_width="110dp"
             android:layout_height="110dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:contentDescription="your face" />
 
         <TextView
             android:id="@+id/status_view"
@@ -42,71 +42,69 @@
             android:layout_toRightOf="@+id/picture_view"
             android:text="date_view" />
     </RelativeLayout>
+
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/bottom_view"
         android:layout_width="match_parent"
         android:layout_height="fill_parent" >
 
-<Spinner
- android:id="@+id/in_edit"
- android:layout_width="150dip"
- android:layout_height="wrap_content"
- android:drawSelectorOnTop="false"
- android:layout_alignParentTop="true"
- android:layout_alignParentLeft="true"
- android:layout_weight="2"/>
- 
- <Spinner
- android:id="@+id/out_edit"
- android:layout_width="150dip"
- android:layout_height="wrap_content"
- android:drawSelectorOnTop="false"
- android:layout_toRightOf="@+id/in_edit"
- android:layout_weight=".5"/>
+        <Spinner
+            android:id="@+id/in_edit"
+            android:layout_width="150dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="2"
+            android:drawSelectorOnTop="false" />
 
+        <Spinner
+            android:id="@+id/out_edit"
+            android:layout_width="150dip"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/in_edit"
+            android:layout_weight=".5"
+            android:drawSelectorOnTop="false" />
  />
- 
- 
- <Spinner
- android:id="@+id/building_edit"
- android:layout_width="150dip"
- android:layout_height="wrap_content"
- android:drawSelectorOnTop="false"
- android:layout_below="@+id/in_edit"
- 
- />
- <Spinner
- android:id="@+id/date_edit"
- android:layout_width="150dip"
- android:layout_height="wrap_content"
- android:drawSelectorOnTop="false"
- android:layout_below="@+id/out_edit"
- 
- android:layout_toRightOf="@+id/building_edit"
- />
- <Button
- android:id="@+id/submit"
- android:layout_width="150dip"
- android:layout_height="wrap_content"
- android:drawSelectorOnTop="false"
- android:layout_below="@+id/building_edit"
- android:text="submit"/>
-  <Button
- android:id="@+id/refresh"
- android:layout_width="150dip"
- android:layout_height="wrap_content"
- android:drawSelectorOnTop="false"
- android:layout_below="@+id/building_edit"
- android:layout_toRightOf="@+id/submit"
- 
- android:text="refresh"/>
-<WebView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/webview"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_below="@+id/submit"/>
 
-	</RelativeLayout>
+        <Spinner
+            android:id="@+id/building_edit"
+            android:layout_width="150dip"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/in_edit"
+            android:drawSelectorOnTop="false" />
+
+        <Spinner
+            android:id="@+id/date_edit"
+            android:layout_width="150dip"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/out_edit"
+            android:layout_toRightOf="@+id/building_edit"
+            android:drawSelectorOnTop="false" />
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="150dip"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/building_edit"
+            android:drawSelectorOnTop="false"
+            android:text="submit" />
+
+        <Button
+            android:id="@+id/refresh"
+            android:layout_width="150dip"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/building_edit"
+            android:layout_toRightOf="@+id/submit"
+            android:drawSelectorOnTop="false"
+            android:text="refresh" />
+
+        <WebView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/webview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/submit" />
+    </RelativeLayout>
+
 </LinearLayout>
-
