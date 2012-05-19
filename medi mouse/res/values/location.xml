@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    
+<string-array name="in">
+<item>In</item>
+<item>At my desk</item>
+<item>In the cafe</item>
+<item>In a meeting</item>
+<item>En route</item>
+<item>Can be paged</item>
+<item>Can be phoned</item>
+<item>Unavailable</item>
+<item>Outside</item>
+</string-array>
+
+<string-array name="bldg">
+<item>building</item>
+<item>Atlanta</item>
+<item>Canton</item>
+<item>Framingham</item>
+<item>Lowder Brook</item>
+<item>Norwood</item>
+<item>Southcoast</item>
+<item>Westwood</item>
+<item>Working at home</item>
+<item>Working at site</item>
+</string-array>
+
+<string-array name="out">
+<item>Out</item>
+<item>Out for the day</item>
+<item>Out Sick</item>
+<item>Out on Vacation</item>
+<item>Out on Leave</item>
+<item>Back in 1/2 hour</item>
+<item>Back in 1 hour</item>
+<item>Back in a while</item>
+</string-array>
+    
+    
+    
+  
+</resources>
