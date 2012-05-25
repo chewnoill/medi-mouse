@@ -123,12 +123,12 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println(":::"+e.getMessage());
-			
+			return "Network Error: "+e.getMessage();
 			//startActivity(new Intent(this, EditPreferences.class));
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
-		return null;
+		return "Network Error";
 	}
 
 

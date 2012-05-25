@@ -11,6 +11,7 @@ public class EditPreferences extends PreferenceActivity {
 		
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.get_auth);
+		
 		PreferenceManager.setDefaultValues(this,R.xml.prefs, false);
 		addPreferencesFromResource(R.xml.prefs);
 		

@@ -15,7 +15,10 @@
             android:password="true"
             android:summary="password"
             android:title="meditech password" />
+        
     </PreferenceCategory>
+    
+    
     <PreferenceCategory
         android:key="first_category"
         android:title="friends" >
