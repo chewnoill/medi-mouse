@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -34,7 +35,7 @@ import android.widget.Toast;
 import org.apache.http.impl.client.DefaultHttpClient;
 
  
-public class MedibugsActivity extends Activity implements OnPreferenceChangeListener{
+public class MedibugsActivity extends Activity implements OnSharedPreferenceChangeListener{
 
 	TextView name_view;
 	TextView status_view;
@@ -117,7 +118,7 @@ public class MedibugsActivity extends Activity implements OnPreferenceChangeList
     	
     	String username = spref.getString("user_name", "");
     	String password = spref.getString("user_password","");
-    	
+    	spref.registerOnSharedPreferenceChangeListener(this);
     	
     	client = medi_post.connect(username, password);
 		
@@ -255,34 +256,38 @@ public class MedibugsActivity extends Activity implements OnPreferenceChangeList
 		public void onClick(View arg0) {
 			System.out.println(":::here:::");
 
-	    	SharedPreferences spref=PreferenceManager.getDefaultSharedPreferences(MedibugsActivity.this);
-	    	
-			String username = spref.getString("user_name", "");
-	    	String password = spref.getString("user_password","");
-	    	System.out.println("user "+username);
-	    	
-	    	client.getConnectionManager().shutdown();
-	    	client = medi_post.connect(username, password);
-	    	me.client=client;
-	    	medi_post postme;
-	    	
-	    	if (!me.hasStafflink()||
-	    			me.username!=username){
-	    		me.username=username;
-	    		me.data = new HashMap<String, String>();
-	    		postme = new medi_post(me.data);
-	    		postme.execute(me);
-	    	} else {	
-				me.secondaryLoad();
-				postme = new medi_post(me.data);
-		    	postme.execute(me);
-	    	}
+	    	reload();
 	    	
 			
 		}
     	
     }
-	
+	public void reload(){
+		SharedPreferences spref=PreferenceManager.getDefaultSharedPreferences(MedibugsActivity.this);
+    	
+		String username = spref.getString("user_name", "");
+    	String password = spref.getString("user_password","");
+    	System.out.println("user "+username);
+    	//release lock when you close connection
+    	me.network_lock = false;
+    	client.getConnectionManager().shutdown();
+    	client = medi_post.connect(username, password);
+    	me.client=client;
+    	medi_post postme;
+    	
+    	if (!me.hasStafflink()||
+    			me.username!=username||
+    			!me.network_auth){
+    		me.username=username;
+    		me.data = new HashMap<String, String>();
+    		postme = new medi_post(me.data);
+    		postme.execute(me);
+    	} else {	
+			me.secondaryLoad();
+			postme = new medi_post(me.data);
+	    	postme.execute(me);
+    	}
+	}
     class submit_listener implements OnClickListener{
 
 		public void onClick(View arg0) {
@@ -353,6 +358,11 @@ public class MedibugsActivity extends Activity implements OnPreferenceChangeList
 		 Toast.makeText(activity, "Oh no! " + description, Toast.LENGTH_SHORT).show();
 	   	}
 	 
+	 @Override
+     public boolean shouldOverrideUrlLoading( WebView view, String url )
+     {
+         return false;
+     }
 
     }
     class in_spin_listener implements AdapterView.OnItemSelectedListener{
@@ -421,11 +431,25 @@ public class MedibugsActivity extends Activity implements OnPreferenceChangeList
         return false;
     }
 
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-		System.out.println("===============123");
-    	medi_post post = new medi_post();
-		post.execute(me);
-		return true;
+	public void onSharedPreferenceChanged(SharedPreferences spref, String arg1) {    	
+		String username = spref.getString(arg1, "");
+		String value = "user_password";
+    	
+    	char[] t = arg1.toCharArray();
+    	
+    	boolean equals = arg1.length()== value.length();
+    	int len = arg1.length();
+    	//not sure why this is false
+    	//System.out.println(arg1+"==user_name? "+(arg1==value));
+    	for (int x=0; x<len&&equals;x++){
+    		if((arg1.charAt(x)!=(value.charAt(x)))){ equals=false;}
+    	}
+    	
+		if(equals){
+			//password has been updated
+			//refresh
+			reload();
+		}
 	}
     
 }

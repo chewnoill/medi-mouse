@@ -35,7 +35,7 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 	public static String SITE2="http://www.meditech.com/employees/RATweb/RATWeb.mps";
 	public static String BASE_URL="http://www.meditech.com"; 
 	private Map<String,String> data;
-	
+
 	public medi_post(Map<String, String> data){
 		this.data=data;
 	}
@@ -43,29 +43,29 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 		this.data=new HashMap<String, String>();
 	}
 	public static DefaultHttpClient connect(String username,String password){
-		
+
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		httpclient.getCredentialsProvider().setCredentials(
 				new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT), 
-                new UsernamePasswordCredentials(username, password));
-		
+				new UsernamePasswordCredentials(username, password));
+
 		return httpclient;
-		
+
 	}
-	
+
 	public static String submit(HttpClient client, Map<String, String> data,String method){
 		return null;
 	}
 	public static void disconnect(HttpClient client){
 		client.getConnectionManager().shutdown();
-		
+
 	}
 	public String doSubmit(HttpClient httpclient,
 			String method, 
 			String username,
 			String password,
 			Activity context) throws unauthorized {		
-		
+
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(data.size());
 		Set<String> keys = data.keySet();
 		Iterator<String> keyIter = keys.iterator();
@@ -77,45 +77,53 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 				nameValuePairs.add(new BasicNameValuePair(key, data.get(key)));
 			}
 		}
-		
+
 		String url = SITE+"?"+post_data;
 		System.out.println(method+":"+url);
 		
+
 		HttpResponse response;
 		try {
 			if(method=="GET"){
 				HttpGet get = new HttpGet(url);
 				response = httpclient.execute(get);
 			}else{
-				
+				System.out.println(1);
 				HttpPost post = new HttpPost(SITE);
+				System.out.println(2);
 				post.setHeader("Content-Type","application/x-www-form-urlencoded");
+				System.out.println(3);
 				post.setEntity(new  UrlEncodedFormEntity(nameValuePairs));
+				System.out.println(4);
 				response = httpclient.execute(post);
+				System.out.println(5);
+				
 			}
-			
+
 			String file = "";
 			String line = "";
-			
+
 			//webview.setHttpAuthUsernamePassword(SITE, "meditech.com", username, password);
 			//webview.postUrl(SITE, EncodingUtils.getBytes(post_data, "BASE64"));
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(response.getEntity().getContent()));
+			System.out.println(6);
 			
-	        BufferedReader in = new BufferedReader(
-	        		new InputStreamReader(response.getEntity().getContent()));
-			
-	        
+
 			while((line=in.readLine())!=null) {
 				file += line;				
 			}
+			System.out.println(7);
 			
 			if(file.contains("not authorized")){
-				
-				//throw new unauthorized();
+				throw new unauthorized();
 			}
+			System.out.println(8);
 			
 			in.close();
 			System.out.println(file);
-			
+
 			return file;
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
@@ -134,26 +142,29 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 
 	@Override
 	protected medi_person doInBackground(medi_person... params) {
+		
 		if(params.length>0){
 			medi_person me = params[0];
+			//actual fix for issue 1 (the easy way)
+			me.webview="Network Error";
 			System.out.println(params.length);
 			String ret = "";
 			if(this.data.containsKey("TYPE")){
 				try {
 					int t = 0;
-			    	int MAX = 100;
-			    	while(me.network_lock&&t<MAX){
-			    		try {
-			    			synchronized (me) {
-			    				  me.wait(1000);
-			    				}
+					int MAX = 100;
+					while(me.network_lock&&t<MAX){
+						try {
+							synchronized (me) {
+								me.wait(1000);
+							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-			    	}
-			    	if(!me.network_lock){
-			    		me.network_lock=true;
+					}
+					if(!me.network_lock){
+						me.network_lock=true;
 						me.loadauth();
 						ret=doSubmit(me.client,"POST",me.username,me.password,me.context);
 						if(ret!=null){
@@ -161,9 +172,12 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 						}
 						me.webview=ret;
 						me.network_lock=false;
-			    	}
+					}
+					me.network_auth=true;
 				} catch (unauthorized e) {
 					//me.context.startActivity(new Intent(me.context, EditPreferences.class));
+					me.webview="unauthorized, please log in";
+					me.network_auth=false;
 				} catch (IllegalStateException e) {
 					//Toast.makeText(me.context, "Oh no! " + e.getMessage(), Toast.LENGTH_SHORT).show();
 				}
@@ -172,19 +186,19 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 				try {
 					if(!me.hasStafflink()){
 						int t = 0;
-				    	int MAX = 100;
-				    	while(me.network_lock&&t<MAX){
-				    		try {
-				    			synchronized (me) {
-				    				  me.wait(1000);
-				    				}
+						int MAX = 100;
+						while(me.network_lock&&t<MAX){
+							try {
+								synchronized (me) {
+									me.wait(1000);
+								}
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-				    	}
-				    	if(t!=MAX){
-				    		me.network_lock=true;
+						}
+						if(t!=MAX){
+							me.network_lock=true;
 							me.primaryLoad();
 							this.data = me.data;
 							ret=doSubmit(me.client,"POST",me.username,me.password,me.context);
@@ -193,16 +207,16 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 							}
 							me.network_lock=false;
 							me.webview=ret;
-							
-				    	}
+
+						}
 					}
-					
+
 					if(me.stafflink!=null&&!me.network_lock){
 						SharedPreferences spref=PreferenceManager.getDefaultSharedPreferences(me.context);
-				    	spref.edit().putString("stafflink", me.stafflink);
-				    	spref.edit().commit();
-				    	System.out.println(":----:"+me.stafflink);
-						
+						spref.edit().putString("stafflink", me.stafflink);
+						spref.edit().commit();
+						System.out.println(":----:"+me.stafflink);
+
 						me.secondaryLoad();
 						this.data = me.data;
 						ret=doSubmit(me.client,"POST",me.username,me.password,me.context);
@@ -211,14 +225,15 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 						}
 						me.webview=ret;
 					}			    	
+					me.network_auth=true;
 				} catch (unauthorized e) {
-					
-			    	//me.context.startActivity(new Intent(me.context, EditPreferences.class));
+					me.network_auth=false;
+					me.webview="unauthorized, please log in";
+					//me.context.startActivity(new Intent(me.context, EditPreferences.class));
 				} catch (IllegalStateException e) {
 					//Toast.makeText(me.context, "Oh no! " + e.getMessage(), Toast.LENGTH_SHORT).show();
 				}
 			}
-			System.out.println("123");
 			
 			return me;
 		}
@@ -226,9 +241,10 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 	}
 	@Override
 	protected void onPostExecute(medi_person result )  {
-		
-	    
+
+
 		Activity context = result.context;
+		medi_person me = result;
 		
 		TextView name_view = (TextView) context.findViewById(R.id.name_view);
 		TextView status_view = (TextView) context.findViewById(R.id.status_view);
@@ -237,21 +253,25 @@ public class medi_post extends AsyncTask<medi_person,Integer,medi_person>{
 		//ImageView picture = (ImageView) context.findViewById(R.id.picture_view);
 		WebView web_view = (WebView) context.findViewById(R.id.webview);
 
-		medi_person me = result;
 		
-		name_view.setText(me.full_name);
-		status_view.setText(me.status);
-		date_view.setText(me.date);
-		//web_view.loadData(me.webview, "text/html", "");
-		int bad = me.webview.indexOf("<img");
-		int end;
-		while (bad != -1){
-			end = me.webview.indexOf(">", bad);
-			me.webview = me.webview.substring(0, bad)+me.webview.substring(end+1, me.webview.length());
-			bad = me.webview.indexOf("<img");
+		
+		//double fix for issue 1
+		if(me!=null&&me.webview!=null){
+			name_view.setText(me.full_name);
+			status_view.setText(me.status);
+			date_view.setText(me.date);
+			//web_view.loadData(me.webview, "text/html", "");
+			
+			int bad = me.webview.indexOf("<img");
+			int end;
+			while (bad != -1){
+				end = me.webview.indexOf(">", bad);
+				me.webview = me.webview.substring(0, bad)+me.webview.substring(end+1, me.webview.length());
+				bad = me.webview.indexOf("<img");
+			}
+			System.out.println("====================>>>\n"+me.webview);
+			web_view.loadDataWithBaseURL(BASE_URL, me.webview, "text/html", "", SITE);
 		}
-		System.out.println("====================>>>\n"+me.webview);
-		web_view.loadDataWithBaseURL(BASE_URL, me.webview, "text/html", "", SITE);
 		super.onPostExecute(me);
 	}
 }

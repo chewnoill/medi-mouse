@@ -23,6 +23,7 @@ public class medi_person {
 	public String humanDate;
 	
 	boolean network_lock = false;
+	boolean network_auth = false;
 	
 	/*what to post 
 	 * im not sure if i can throw more then one object through
